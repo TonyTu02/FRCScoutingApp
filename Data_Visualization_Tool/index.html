@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>FRC 8729 Auto Scouting</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.2.1/math.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="home_pages_section_charts.js"></script>
+  <script src="event_selection.js"></script>
+  
+</head>
+<body class="dark-theme">
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="schedule.html">Match Schedule</a></li>
+        <li><a href="preMatch2023.html">PreMatch Analysis</a></li>
+        <li><a href="compareTeams2023.html">Compare Teams</a></li>
+        <li><a href="#">Picklist Generator</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="jumbotron text-center">
+    <h1>Scouting and Data Visualization App</h1>      
+</div>
+
+<div class="container-fluid bg-3">   
+    <div class="column_split">
+        <div class="three_way_split_block_reverse", style="width: 60%;">
+            <div class="column_split">
+                <h2 id="Year">Year: </h2> 
+                <h2 id="lblYear", style="color: #5fdac5;">2023</h2>
+                <h2 style="color: #1e1e1e;">A</h2>
+                <h2 >EventType: </h2>
+                <h2 id="lblEventType", style="color: #5fdac5;"> - </h2>
+                <h2 style="color: #1e1e1e;">A</h2>
+                <h2>EventCode: </h2>
+                <h2 id="lblEventCode", style="color: #5fdac5;"> - </h2>
+            </div>
+            <div class="column_split">
+                <h2 id="Event">Event: </h2>
+                <div class="custom-dropdown">
+                    <div id="select-event", class="selected-item">Select An Event</div>
+                    <ul id="event-dropdown", class="dropdown-list"></ul>
+                </div>
+            </div>
+        </div>
+        <div class="three_way_split_block", style="width: 40%;">
+            <div class="column_split">
+                <h2>City: </h2> 
+                <h2 id="lblCity", style="color: #5fdac5;"> - </h2>
+                <h2>Province / State: </h2>
+                <h2 id="lblProvince", style="color: #5fdac5;"> - </h2>
+            </div>
+            <div class="column_split">
+                <h2>Country: </h2>
+                <h2 id="lblCountry", style="color: #5fdac5;"> - </h2>
+                <h2>District: </h2>
+                <h2 id="lblDistrict", style="color: #5fdac5;"> - </h2>
+            </div>
+        </div>
+    </div>
+</div><br>
+  
+<div class="container-fluid bg-3 text-center">    
+    <div class="column_split">
+        <div class="four_way_split_block">
+            <canvas id="matchScheduleChart"></canvas><br>
+            <a href="schedule.html">
+                <button class="custom-btn btn"><strong>Match Schedule</strong></button>
+            </a>
+        </div>
+        <div class="four_way_split_block">
+            <canvas id="prematchAnalysisChart"></canvas><br>
+            <a href="preMatch2023.html">
+                <button  class="custom-btn btn"><strong>PreMatch Analysis</strong></button>
+            </a>
+            
+        </div>
+        <div class="four_way_split_block">
+            <canvas id="compareTeamsChart"></canvas><br>
+            <a href="compareTeams2023.html">
+                <button  class="custom-btn btn"><strong>Compare Teams</strong></button>
+            </a>
+        </div>
+        <div class="four_way_split_block">
+            <canvas id="picklistChart"></canvas><br>
+            <a href=#>
+                <button  class="custom-btn btn"><strong>Picklist Generator</strong></button>
+            </a>
+        </div>
+</div><br>
+
+<footer class="container-fluid text-center">
+    <p>by FRC Team 8729 - Sparkling H2O</p>
+</footer>
+
+</body>
+</html>

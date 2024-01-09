@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>FRC 8729 Auto Scouting</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.2.1/math.min.js"></script>
+  <script src="compareTeams2023.js"></script>
+</head>
+<body class="dark-theme">
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="schedule.html">Match Schedule</a></li>
+        <li><a href="preMatch2023.html">PreMatch Analysis</a></li>
+        <li class="active"><a href="#">Compare Teams</a></li>
+        <li><a href="#">Picklist Generator</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="jumbotron text-center">
+    <h1 id="title">Compare Team Performances at Event</h1>      
+</div>
+
+<div class="container-fluid bg-3">   
+  <div class="column_split">
+      <div class="three_way_split_block_reverse", style="width: 60%;">
+          <div class="column_split">
+              <h2 id="Year">Year: </h2> 
+              <h2 id="lblYear", style="color: #5fdac5;">2024</h2>
+              <h2 style="color: #1e1e1e;">A</h2>
+              <h2 >EventType: </h2>
+              <h2 id="lblEventType", style="color: #5fdac5;"> - </h2>
+              <h2 style="color: #1e1e1e;">A</h2>
+              <h2>EventCode: </h2>
+              <h2 id="lblEventCode", style="color: #5fdac5;"> - </h2>
+          </div>
+          <div class="column_split">
+              <h2 id="Event">Event: </h2>
+              <h2 id="lblEventName", style="color: #5fdac5;"> - </h2>
+          </div>
+      </div>
+      <div class="three_way_split_block", style="width: 40%;">
+          <div class="column_split">
+              <h2>City: </h2> 
+              <h2 id="lblCity", style="color: #5fdac5;"> - </h2>
+              <h2>Province / State: </h2>
+              <h2 id="lblProvince", style="color: #5fdac5;"> - </h2>
+          </div>
+          <div class="column_split">
+              <h2>Country: </h2>
+              <h2 id="lblCountry", style="color: #5fdac5;"> - </h2>
+              <h2>District: </h2>
+              <h2 id="lblDistrict", style="color: #5fdac5;"> - </h2>
+          </div>
+      </div>
+  </div>
+</div><br>
+
+
+<div class="container-fluid bg-3 text-center">
+  <div class="table_container" id="error_message_container">
+      <h2 class="error_message" id="no_event_message"><a href="index.html">No event selected yet, please return to Home to select an event</a></h2>
+  </div>    
+  <div class="column_split">
+      <div class="two_way_split_block" id="left_block">
+        <div class="column_split">
+          <div class="four_way_split_block">
+            <h3>Team 1: </h3><br>
+          </div>
+          <div class="four_way_split_block">
+            <h3 id="team-left-key"></h3><br>
+          </div>
+          <div class="two_way_split_block">
+            <div class="custom-dropdown">
+              <div id="select-team-left", class="selected-item">Select A Team</div>
+              <ul id="event-dropdown-left", class="dropdown-list", style="max-height: 14vw;"></ul>
+            </div>  
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="four_way_split_block">
+            <h3>Summary:</h3>
+            <h4 id="blueLblRank">(Rank: ? / ?)</h4>
+          </div>
+          <div class="four_way_split_block_reverse">
+            <canvas id="summaryOPR-left" style= "max-height: 6vw;"></canvas>
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="three_way_split_block">
+            <h2 style="text-align: left;">OPR-breakdown:</h2>
+            <h2 id="blueLblAuto" style="text-align: left;">Auto:</h2>
+            <h4 id="blueLblAutoRank" style="text-align: left;">(Rank: ? / ?)</h4>
+            <h2 id="blueLblTeleop" style="text-align: left;">Teleop:</h2>
+            <h4 id="blueLblTeleopRank" style="text-align: left;">(Rank: ? / ?)</h4>
+            <h2 id="blueLblEndgame" style="text-align: left;">Endgame:</h2>
+            <h4 id="blueLblEndgameRank" style="text-align: left;">(Rank: ? / ?)</h4>
+          </div>
+          <div class="three_way_split_block">
+            <h2>Auto Breakdown:</h2>
+            <canvas id="autoOPRPie-left" style= "max-height: 12vw;"></canvas>
+          </div>
+          <div class="three_way_split_block">
+            <h2>Tele Breakdown:</h2>
+            <canvas id="teleOPRPie-left" style= "max-height: 12vw;"></canvas>
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="three_way_split_block">
+            <h2>Auto GamePieces:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="autoCommunityGamePieceTotal - left">Total:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="autoCommunityGamePieceT - left">Top:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="autoCommunityGamePieceM - left">Mid:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="autoCommunityGamePieceB - left">Bot:</h2>
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>T:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT1 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityT2 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT3 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT4 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityT5 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT6 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT7 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityT8 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT9 - left"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>M:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM1 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityM2 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM3 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM4 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityM5 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM6 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM7 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityM8 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM9 - left"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>B:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB1 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB2 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB3 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB4 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB5 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB6 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB7 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB8 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB9 - left"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="three_way_split_block">
+            <h2>Tele GamePieces:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="teleopCommunityGamePieceTotal - left">Total:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="teleopCommunityGamePieceT - left">Top:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="teleopCommunityGamePieceM - left">Mid:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="teleopCommunityGamePieceB - left">Bot:</h2>
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>T:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT1 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityT2 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT3 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT4 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityT5 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT6 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT7 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityT8 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT9 - left"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>M:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM1 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityM2 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM3 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM4 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityM5 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM6 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM7 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityM8 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM9 - left"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>B:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB1 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB2 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB3 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB4 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB5 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB6 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB7 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB8 - left"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB9 - left"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="three_way_split_block">
+            <h2>Endgame:</h2>
+            <canvas id="endgamePie - left" style= "max-height: 12vw;"></canvas>
+          </div>
+          <div class="three_way_split_block_reverse">
+            <h3>Other Stats: </h3>
+            <div class="column_split">
+              <div class="two_way_split_block">
+                <h2 id="blueLblLinkCount" style="text-align: left;">Link Count:</h2>
+                <h2 id="blueLblFoul" style="text-align: left;">Fouls:</h2>
+                <h2 id="blueLblTechFoul" style="text-align: left;">Tech Fouls:</h2>
+              </div>
+              <div class="two_way_split_block">
+                <h2 id="blueLblCoopBonus" style="text-align: left;">Coop Bonus:</h2>
+                <h2 id="blueLblRPAct" style="text-align: left;">RP Activation:</h2>
+                <h2 id="blueLblRPSus" style="text-align: left;">RP Sustain:</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="two_way_split_block" id="right_block">
+        <div class="column_split">
+          <div class="four_way_split_block">
+            <h3>Team 2: </h3><br>
+          </div>
+          <div class="four_way_split_block">
+            <h3 id="team-right-key"></h3><br>
+          </div>
+          <div class="two_way_split_block">
+            <div class="custom-dropdown">
+              <div id="select-team-right", class="selected-item">Select A Team</div>
+              <ul id="event-dropdown-right", class="dropdown-list", style="max-height: 14vw;"></ul>
+            </div>  
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="four_way_split_block">
+            <h3>Summary:</h3>
+            <h4 id="redLblRank">(Rank: ? / ?)</h4>
+          </div>
+          <div class="four_way_split_block_reverse">
+            <canvas id="summaryOPR-right" style= "max-height: 6vw;"></canvas>
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="three_way_split_block">
+            <h2 style="text-align: left;">OPR-breakdown:</h2>
+            <h2 id="redLblAuto" style="text-align: left;">Auto:</h2>
+            <h4 id="redLblAutoRank" style="text-align: left;">(Rank: ? / ?)</h4>
+            <h2 id="redLblTeleop" style="text-align: left;">Teleop:</h2>
+            <h4 id="redLblTeleopRank" style="text-align: left;">(Rank: ? / ?)</h4>
+            <h2 id="redLblEndgame" style="text-align: left;">Endgame:</h2>
+            <h4 id="redLblEndgameRank" style="text-align: left;">(Rank: ? / ?)</h4>
+          </div>
+          <div class="three_way_split_block">
+            <h2>Auto Breakdown:</h2>
+            <canvas id="autoOPRPie-right" style= "max-height: 12vw;"></canvas>
+          </div>
+          <div class="three_way_split_block">
+            <h2>Tele Breakdown:</h2>
+            <canvas id="teleOPRPie-right" style= "max-height: 12vw;"></canvas>
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="three_way_split_block">
+            <h2>Auto GamePieces:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="autoCommunityGamePieceTotal - right">Total:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="autoCommunityGamePieceT - right">Top:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="autoCommunityGamePieceM - right">Mid:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="autoCommunityGamePieceB - right">Bot:</h2>
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>T:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT1 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityT2 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT3 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT4 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityT5 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT6 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT7 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityT8 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityT9 - right"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>M:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM1 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityM2 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM3 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM4 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityM5 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM6 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM7 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityM8 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="autoCommunityM9 - right"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>B:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB1 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB2 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB3 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB4 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB5 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB6 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB7 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB8 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="autoCommunityB9 - right"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="three_way_split_block">
+            <h2>Tele GamePieces:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="teleopCommunityGamePieceTotal - right">Total:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="teleopCommunityGamePieceT - right">Top:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="teleopCommunityGamePieceM - right">Mid:</h2>
+          </div>
+          <div class="six_way_split_block">
+            <h2 id="teleopCommunityGamePieceB - right">Bot:</h2>
+          </div>
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>T:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT1 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityT2 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT3 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT4 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityT5 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT6 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT7 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityT8 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityT9 - right"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>M:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM1 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityM2 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM3 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM4 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityM5 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM6 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM7 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityM8 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cone_image">
+              <div class="image_overlay" id="teleopCommunityM9 - right"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="ten_way_split_block">
+            <h2>B:</h2>
+          </div>  
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB1 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB2 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB3 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB4 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB5 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB6 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB7 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB8 - right"></div>
+            </div>
+          </div> 
+          <div class="ten_way_split_block">
+            <div class="cube_image">
+              <div class="image_overlay" id="teleopCommunityB9 - right"></div>
+            </div>
+          </div> 
+        </div>
+        <div class="column_split">
+          <div class="three_way_split_block">
+            <h2>Endgame:</h2>
+            <canvas id="endgamePie - right" style= "max-height: 12vw;"></canvas>
+          </div>
+          <div class="three_way_split_block_reverse">
+            <h3>Other Stats: </h3>
+            <div class="column_split">
+              <div class="two_way_split_block">
+                <h2 id="redLblLinkCount" style="text-align: left;">Link Count:</h2>
+                <h2 id="redLblFoul" style="text-align: left;">Fouls:</h2>
+                <h2 id="redLblTechFoul" style="text-align: left;">Tech Fouls:</h2>
+              </div>
+              <div class="two_way_split_block">
+                <h2 id="redLblCoopBonus" style="text-align: left;">Coop Bonus:</h2>
+                <h2 id="redLblRPAct" style="text-align: left;">RP Activation:</h2>
+                <h2 id="redLblRPSus" style="text-align: left;">RP Sustain:</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div><br>
+<footer class="container-fluid text-center">
+    <p id = "footer_p">by FRC Team 8729 - Sparkling H2O</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>FRC 8729 Auto Scouting</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.2.1/math.min.js"></script>
+  <script src="schedule.js"></script>
+</head>
+<body class="dark-theme">
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li class="active"><a href="#">Match Schedule</a></li>
+        <li><a href="preMatch2023.html">PreMatch Analysis</a></li>
+        <li><a href="compareTeams2023.html">Compare Teams</a></li>
+        <li><a href="#">Picklist Generator</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="jumbotron text-center">
+    <h1 id="title">Match Schedule & Final Score Predictions</h1>      
+</div>
+
+<div class="container-fluid bg-3">   
+  <div class="column_split">
+      <div class="three_way_split_block_reverse", style="width: 60%;">
+          <div class="column_split">
+              <h2 id="Year">Year: </h2> 
+              <h2 id="lblYear", style="color: #5fdac5;">2024</h2>
+              <h2 style="color: #1e1e1e;">A</h2>
+              <h2 >EventType: </h2>
+              <h2 id="lblEventType", style="color: #5fdac5;"> - </h2>
+              <h2 style="color: #1e1e1e;">A</h2>
+              <h2>EventCode: </h2>
+              <h2 id="lblEventCode", style="color: #5fdac5;"> - </h2>
+          </div>
+          <div class="column_split">
+              <h2 id="Event">Event: </h2>
+              <h2 id="lblEventName", style="color: #5fdac5;"> - </h2>
+          </div>
+      </div>
+      <div class="three_way_split_block", style="width: 40%;">
+          <div class="column_split">
+              <h2>City: </h2> 
+              <h2 id="lblCity", style="color: #5fdac5;"> - </h2>
+              <h2>Province / State: </h2>
+              <h2 id="lblProvince", style="color: #5fdac5;"> - </h2>
+          </div>
+          <div class="column_split">
+              <h2>Country: </h2>
+              <h2 id="lblCountry", style="color: #5fdac5;"> - </h2>
+              <h2>District: </h2>
+              <h2 id="lblDistrict", style="color: #5fdac5;"> - </h2>
+          </div>
+      </div>
+  </div>
+</div><br>
+
+
+<div class="container-fluid bg-3">
+    <div class="table_container" id="loader_container" style="display: none;">
+        <div class="loader" id="loader"></div>  
+    </div>
+    
+    <div class="table_container">
+        <h2 class="error_message" id="no_event_message" style="display: none;"><a href="index.html">No event selected yet, please return to Home to select an event</a></h2>
+        <table id="matches-table"></table>    
+    </div>
+</div>
+
+<footer class="container-fluid text-center">
+    <p id = "footer_p">by FRC Team 8729 - Sparkling H2O</p>
+</footer>
+
+</body>
+</html>

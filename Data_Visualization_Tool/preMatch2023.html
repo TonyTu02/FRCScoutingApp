@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>FRC 8729 Auto Scouting</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.2.1/math.min.js"></script>
+  <script src="preMatch2023.js"></script>
+</head>
+<body class="dark-theme">
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="schedule.html">Match Schedule</a></li>
+        <li class="active"><a href="#">PreMatch Analysis</a></li>
+        <li><a href="compareTeams2023.html">Compare Teams</a></li>
+        <li><a href="#">Picklist Generator</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="jumbotron text-center">
+    <h1 id="title">Prematch Analysis & Predictions</h1>      
+</div>
+
+<div class="container-fluid bg-3">   
+  <div class="column_split">
+      <div class="three_way_split_block_reverse", style="width: 60%;">
+          <div class="column_split">
+              <h2 id="Year">Year: </h2> 
+              <h2 id="lblYear", style="color: #5fdac5;">2024</h2>
+              <h2 style="color: #1e1e1e;">A</h2>
+              <h2 >EventType: </h2>
+              <h2 id="lblEventType", style="color: #5fdac5;"> - </h2>
+              <h2 style="color: #1e1e1e;">A</h2>
+              <h2>EventCode: </h2>
+              <h2 id="lblEventCode", style="color: #5fdac5;"> - </h2>
+          </div>
+          <div class="column_split">
+              <h2 id="Event">Event: </h2>
+              <h2 id="lblEventName", style="color: #5fdac5;"> - </h2>
+          </div>
+      </div>
+      <div class="three_way_split_block", style="width: 40%;">
+          <div class="column_split">
+              <h2>City: </h2> 
+              <h2 id="lblCity", style="color: #5fdac5;"> - </h2>
+              <h2>Province / State: </h2>
+              <h2 id="lblProvince", style="color: #5fdac5;"> - </h2>
+          </div>
+          <div class="column_split">
+              <h2>Country: </h2>
+              <h2 id="lblCountry", style="color: #5fdac5;"> - </h2>
+              <h2>District: </h2>
+              <h2 id="lblDistrict", style="color: #5fdac5;"> - </h2>
+          </div>
+      </div>
+  </div>
+</div><br>
+
+
+<div class="container-fluid bg-3 text-center">
+  <div class="table_container" id="error_message_container">
+      <h2 class="error_message" id="no_event_message"><a href="index.html">No event selected yet, please return to Home to select an event</a></h2>
+  </div>
+  <div class="column_split">
+    <div class="six_way_split_block">
+        <h2>Match: </h2>
+    </div>
+    <div class="six_way_split_block_reverse">
+        <div class="custom-dropdown">
+            <div id="select-match", class="selected-item">Select Match</div>
+            <ul id="match-dropdown", class="dropdown-list"></ul>
+        </div>
+    </div>
+  </div>
+  <div class="column_split">
+      <div class="two_way_split_block" id="left_block">
+        <div class="column_split">
+            <div class="four_way_split_block">
+                <h2>Blue: </h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="blueLbl1">Blue Team 1</h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="blueLbl2">Blue Team 2</h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="blueLbl3">Blue Team 3</h2>
+            </div>
+        </div>
+        <div class="column_split">
+            <div class="six_way_split_block">
+                <h2 id="lblTotalOPR - left">Summary: </h2>
+            </div>
+            <div class="six_way_split_block_reverse">
+                <canvas id="combinedOPR-left" style= "max-height: 6vw;"></canvas>
+            </div>
+        </div>
+        <h2 style="text-align: left;">Individual Team Contributions: </h2>
+        <div class="column_split">
+            <canvas id="individualOPR-left" style= "max-height: 16vw;"></canvas>
+        </div>
+        <div class="column_split">
+            <div class="four_way_split_block">
+                <h2>Autonamous Breakdown: </h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="blueAutoLbl1">Blue Team 1: </h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="blueAutoLbl2">Blue Team 2: </h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="blueAutoLbl3">Blue Team 3: </h2>
+            </div>
+        </div>
+      </div>
+      <div class="two_way_split_block" id="right_block">
+        <div class="column_split">
+            <div class="four_way_split_block">
+                <h2>Red: </h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="redLbl1">Red Team 1</h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="redLbl2">Red Team 2</h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="redLbl3">Red Team 3</h2>
+            </div>
+        </div>
+        <div class="column_split">
+            <div class="six_way_split_block">
+                <h2 id="lblTotalOPR - right">Summary: </h2>
+            </div>
+            <div class="six_way_split_block_reverse">
+                <canvas id="combinedOPR-right" style= "max-height: 6vw;"></canvas>
+            </div>
+        </div>
+        <h2 style="text-align: left;">Individual Team Contributions: </h2>
+        <div class="column_split">
+            <canvas id="individualOPR-right" style= "max-height: 16vw;"></canvas>
+        </div>
+        <div class="column_split">
+            <div class="four_way_split_block">
+                <h2>Autonamous Breakdown: </h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="redAutoLbl1">Red Team 1: </h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="redAutoLbl2">Red Team 2: </h2>
+            </div>
+            <div class="four_way_split_block">
+                <h2 id="redAutoLbl3">Red Team 3: </h2>
+            </div>
+        </div>
+    </div>
+</div><br>
+<footer class="container-fluid text-center">
+    <p id = "footer_p">by FRC Team 8729 - Sparkling H2O</p>
+</footer>
+
+</body>
+</html>
