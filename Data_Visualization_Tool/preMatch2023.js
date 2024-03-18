@@ -382,7 +382,35 @@ function generateAutoPieGraph(blue1AutoPieChart, blue2AutoPieChart, blue3AutoPie
         red3AutoPieChart.destroy();
     }
 
-    
+    blue1AutoPieChart = new Chart(blue1AutoPieCanvas, { 
+        type: 'doughnut', // Use 'doughnut' for ring chart
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                data: chartData,
+                backgroundColor: blueChartColor,
+                borderWidth: 5,
+                borderColor: '#1e1e1e'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            cutout: '20%', // Adjust the cutout percentage for the center hole
+            animation: {
+                duration: 1000,
+                easing: 'easeInOutQuart'
+            },
+            plugins: {
+                legend: {
+                    display: false // Set display to false to hide the legend
+                }
+            },
+            events: ['click', 'mousemove', 'mouseout', 'touchstart', 'touchmove'],
+        }
+    });
+
+
 }
 
 
